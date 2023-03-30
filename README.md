@@ -9,8 +9,8 @@ The program is written in C and determines the optimal crossover point for switc
 strassen_matrix_multiplication/
  ├── bin/
  └── data/
-    ├── example - 20 pairs.csv
-    └── example - single matrix pair.csv
+    ├── matrix-20-pairs.csv
+    └── matrix-single-pair.csv
  └── include/
     ├── main.h
     ├── matrix.h
@@ -64,4 +64,13 @@ This folder contains the following source code files:
 4. Run the program using the following command:
 
 ```bash
-./bin/strassen_matrix_multiplication [input_file] [output_file] [crossover_point]
+./bin/matrix_app [input_file] [output_file] [crossover_point] [n]
+```
+
+To run the `matrix_app` program, you will need to specify the following arguments:
+
+- `[input_file]`: the path to the input file
+- `[output_file]`: the path to the output file
+- `[crossover_point]`: the crossover point for the genetic algorithm
+- `[n]`: the size of the matrix in the form of 2^n x 2^n
+
