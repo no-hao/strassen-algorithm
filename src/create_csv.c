@@ -1,7 +1,5 @@
 #include "../include/create_csv.h"
 #include "../include/file_utils.h"
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 void write_random_matrix(FILE *file, int rows, int cols) {
@@ -15,19 +13,13 @@ void write_random_matrix(FILE *file, int rows, int cols) {
       matrix.data[j][k] = (float)rand() / (float)RAND_MAX * 9.0f;
     }
   }
+
   write_matrix_to_file(file, matrix);
   // Remember to free the memory allocated for the matrix data
   for (int i = 0; i < rows; i++) {
     free(matrix.data[i]);
   }
   free(matrix.data);
-}
-
-void write_separator_line(FILE *file, int cols) {
-  for (int l = 0; l < cols - 1; l++) {
-    fprintf(file, ",");
-  }
-  fprintf(file, "\n");
 }
 
 void create_csv(int n, int pairs) {

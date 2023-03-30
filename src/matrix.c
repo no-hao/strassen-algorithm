@@ -1,9 +1,10 @@
 #include "../include/file_utils.h"
+#include <stdlib.h>
 #include <string.h>
 
 MatrixArray initialize_matrix_array() {
   MatrixArray matrix_array;
-  matrix_array.count = 0;
+  matrix_array.num_matrices = 0;
   matrix_array.matrices = NULL;
   return matrix_array;
 }
@@ -39,13 +40,31 @@ void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row) {
   }
 }
 
+int get_max_number_width(MatrixArray matrix_array) {
+  int max_width = 0;
+  for (int m = 0; m < matrix_array.num_matrices; m++) {
+    Matrix matrix = matrix_array.matrices[m];
+    for (int i = 0; i < matrix.rows; i++) {
+      for (int j = 0; j < matrix.cols; j++) {
+        int width = snprintf(NULL, 0, "%.0f", matrix.data[i][j]);
+        if (width > max_width) {
+          max_width = width;
+        }
+      }
+    }
+  }
+  return max_width;
+}
+
 void print_matrices(MatrixArray matrix_array) {
-  for (int m = 0; m < matrix_array.count; m++) {
+  int max_width = get_max_number_width(matrix_array);
+
+  for (int m = 0; m < matrix_array.num_matrices; m++) {
     printf("Matrix %d:\n", m + 1);
     Matrix matrix = matrix_array.matrices[m];
     for (int i = 0; i < matrix.rows; i++) {
       for (int j = 0; j < matrix.cols; j++) {
-        printf("%.0f ", matrix.data[i][j]);
+        printf("%*.0f ", max_width, matrix.data[i][j]);
       }
       printf("\n");
     }
@@ -55,7 +74,7 @@ void print_matrices(MatrixArray matrix_array) {
 
 void free_matrices(MatrixArray *matrix_array) {
   if (matrix_array->matrices) {
-    for (int m = 0; m < matrix_array->count; m++) {
+    for (int m = 0; m < matrix_array->num_matrices; m++) {
       Matrix *matrix = &matrix_array->matrices[m];
       if (matrix->data) {
         for (int i = 0; i < matrix->rows; i++) {
@@ -69,7 +88,7 @@ void free_matrices(MatrixArray *matrix_array) {
     free(matrix_array->matrices);
     matrix_array->matrices = NULL;
   }
-  matrix_array->count = 0;
+  matrix_array->num_matrices = 0;
 }
 
 // Function to multiply a pair of matrices using the specified function
@@ -82,17 +101,17 @@ Matrix multiply_matrix_pair(Matrix a, Matrix b,
 // specified function
 MatrixArray multiply_matrix_array(MatrixArray input,
                                   Matrix (*multiply_func)(Matrix, Matrix)) {
-  if (input.count % 2 != 0) {
+  if (input.num_matrices % 2 != 0) {
     printf(
         "Error: odd number of matrices in input. Cannot multiply in pairs.\n");
     exit(EXIT_FAILURE);
   }
 
   MatrixArray output;
-  output.count = input.count / 2;
-  output.matrices = (Matrix *)malloc(output.count * sizeof(Matrix));
+  output.num_matrices = input.num_matrices / 2;
+  output.matrices = (Matrix *)malloc(output.num_matrices * sizeof(Matrix));
 
-  for (int i = 0; i < input.count; i += 2) {
+  for (int i = 0; i < input.num_matrices; i += 2) {
     output.matrices[i / 2] = multiply_matrix_pair(
         input.matrices[i], input.matrices[i + 1], multiply_func);
   }

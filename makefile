@@ -20,6 +20,7 @@ SRC_DIR = src
 DATA_DIR = data
 BIN_DIR = bin
 OUTPUT_DIR = output
+RESULT_DIR = result
 
 # Define the sources and objects for create_csv
 CREATE_CSV_SOURCES = $(SRC_DIR)/create_csv.c
@@ -30,6 +31,10 @@ $(shell mkdir -p $(OUTPUT_DIR))
 
 # Create the data directory if it doesn't exist
 $(shell mkdir -p $(DATA_DIR))
+
+# Create the result directory if it doesn't exist
+$(shell mkdir -p $(RESULT_DIR))
+
 
 # Default target: all
 all: $(TARGET_APP) $(TARGET_CREATE_CSV)

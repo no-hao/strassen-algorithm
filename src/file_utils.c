@@ -1,4 +1,32 @@
 #include "../include/file_utils.h"
+#include <string.h>
+
+char *generate_output_file_path(const char *input_file_path) {
+  const char *output_dir = "./output/";
+  const char *suffix = "-OUTPUT.csv";
+  const char *filename_start = strrchr(input_file_path, '/');
+  const char *extension = ".csv";
+
+  if (filename_start == NULL) {
+    filename_start = input_file_path;
+  } else {
+    filename_start++;
+  }
+
+  size_t filename_length = strlen(filename_start) - strlen(extension);
+  char *filename_no_ext = (char *)malloc(filename_length + 1);
+  strncpy(filename_no_ext, filename_start, filename_length);
+  filename_no_ext[filename_length] = '\0';
+
+  char *output_file_path = (char *)malloc(
+      strlen(output_dir) + strlen(filename_no_ext) + strlen(suffix) + 1);
+  strcpy(output_file_path, output_dir);
+  strcat(output_file_path, filename_no_ext);
+  strcat(output_file_path, suffix);
+
+  free(filename_no_ext);
+  return output_file_path;
+}
 
 void write_matrix_to_file(FILE *file, Matrix matrix) {
   for (int j = 0; j < matrix.rows; j++) {
@@ -10,6 +38,40 @@ void write_matrix_to_file(FILE *file, Matrix matrix) {
     }
     fprintf(file, "\n");
   }
+}
+
+void write_separator_line(FILE *file, int cols) {
+  for (int l = 0; l < cols - 1; l++) {
+    fprintf(file, ",");
+  }
+  fprintf(file, "\n");
+}
+
+void write_output_to_csv(const char *output_file, MatrixArray output_matrices) {
+  FILE *file = fopen(output_file, "w");
+  if (file == NULL) {
+    fprintf(stderr, "Error opening output file: %s\n", output_file);
+    return;
+  }
+
+  for (int k = 0; k < output_matrices.num_matrices; k++) {
+    Matrix *matrix = &output_matrices.matrices[k];
+    for (int i = 0; i < matrix->rows; i++) {
+      for (int j = 0; j < matrix->cols; j++) {
+        fprintf(file, "%.0f", matrix->data[i][j]);
+        if (j < matrix->cols - 1) {
+          fprintf(file, ",");
+        } else {
+          fprintf(file, "\n");
+        }
+      }
+    }
+    if (k < output_matrices.num_matrices - 1) {
+      write_separator_line(file, matrix->cols);
+    }
+  }
+
+  fclose(file);
 }
 
 MatrixArray read_csv(const char *filename, int n) {
@@ -46,7 +108,7 @@ MatrixArray read_csv(const char *filename, int n) {
     if (row == 0) {
       create_new_matrix = 0;
       current_matrix++;
-      matrix_array.count++;
+      matrix_array.num_matrices++;
       matrix_array.matrices =
           add_matrix(matrix_array.matrices, current_matrix, rows, cols);
     }
@@ -65,22 +127,4 @@ MatrixArray read_csv(const char *filename, int n) {
   }
 
   return matrix_array;
-}
-
-// Function to write the output matrices to a CSV file
-void write_output_to_csv(const char *filename, MatrixArray output) {
-  FILE *file = fopen(filename, "w");
-  if (file == NULL) {
-    printf("Error: unable to create output file.\n");
-    exit(EXIT_FAILURE);
-  }
-
-  for (int i = 0; i < output.count; i++) {
-    write_matrix_to_file(file, output.matrices[i]);
-    if (i < output.count - 1) {
-      fprintf(file, "\n");
-    }
-  }
-
-  fclose(file);
 }

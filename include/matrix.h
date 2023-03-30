@@ -1,9 +1,6 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef struct {
   int rows;
   int cols;
@@ -11,28 +8,28 @@ typedef struct {
 } Matrix;
 
 typedef struct {
-  int count;
+  int num_matrices;
   Matrix *matrices;
 } MatrixArray;
 
+MatrixArray initialize_matrix_array();
+
+int is_blank_line(const char *line, int len);
+
+Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols);
+
 void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row);
 
-MatrixArray multiply_matrix_array(MatrixArray input,
-                                  Matrix (*multiply_func)(Matrix, Matrix));
+int get_max_number_width(MatrixArray matrix_array);
+
+void print_matrices(MatrixArray matrix_array);
+
+void free_matrices(MatrixArray *matrix_array);
 
 Matrix multiply_matrix_pair(Matrix a, Matrix b,
                             Matrix (*multiply_func)(Matrix, Matrix));
 
-Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols);
-
-MatrixArray read_csv(const char *filename, int n);
-
-void free_matrices(MatrixArray *matrix_array);
-
-void print_matrices(MatrixArray matrix_array);
-
-int is_blank_line(const char *line, int len);
-
-MatrixArray initialize_matrix_array();
+MatrixArray multiply_matrix_array(MatrixArray input,
+                                  Matrix (*multiply_func)(Matrix, Matrix));
 
 #endif // MATRIX_H

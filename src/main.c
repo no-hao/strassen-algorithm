@@ -1,4 +1,5 @@
-#include "../include/matrix.h"
+#include "../include/brute_force.h"
+#include "../include/file_utils.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -9,18 +10,32 @@ int main(int argc, char *argv[]) {
   const char *file_path = argv[1];
   int n = atoi(argv[2]);
 
-  MatrixArray matrix_array = read_csv(file_path, n);
+  MatrixArray input_matrices = read_csv(file_path, n);
 
-  if (matrix_array.matrices == NULL) {
+  if (input_matrices.matrices == NULL) {
     fprintf(stderr, "Error reading matrices from file: %s\n", file_path);
     return 1;
   }
 
   printf("Matrices read from file %s:\n", file_path);
-  print_matrices(matrix_array);
+  print_matrices(input_matrices);
   printf("\n");
 
-  free_matrices(&matrix_array);
+  MatrixArray output_matrices =
+      multiply_matrix_array(input_matrices, multiply_matrix_pairs_bf);
+
+  printf("Output matrices:\n");
+  print_matrices(output_matrices);
+  printf("\n");
+
+  char *output_file = generate_output_file_path(file_path);
+  write_output_to_csv(output_file, output_matrices);
+  printf("Output matrices written to file: %s\n", output_file);
+
+  free(output_file);
+
+  free_matrices(&input_matrices);
+  free_matrices(&output_matrices);
 
   return 0;
 }

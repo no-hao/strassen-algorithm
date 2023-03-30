@@ -3,10 +3,8 @@
 
 #include <stdio.h>
 
-void create_csv(int n, int pairs);
-
 void write_random_matrix(FILE *file, int rows, int cols);
 
-void write_separator_line(FILE *file, int cols);
+void create_csv(int n, int pairs);
 
 #endif // !DEBUG

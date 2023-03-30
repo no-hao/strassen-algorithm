@@ -1,6 +1,4 @@
 #include "../include/brute_force.h"
-#include "../include/file_utils.h"
-#include "../include/matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
 
