@@ -11,18 +11,18 @@ int main(int argc, char *argv[]) {
   const char *file_path = argv[1];
   int n = atoi(argv[2]);
 
-  Matrix m = read_csv(file_path, n);
+  MatrixArray matrix_array = read_csv(file_path, n);
 
-  if (m.data == NULL) {
-    fprintf(stderr, "Error reading matrix from file: %s\n", file_path);
+  if (matrix_array.matrices == NULL) {
+    fprintf(stderr, "Error reading matrices from file: %s\n", file_path);
     return 1;
   }
 
-  printf("Matrix read from file %s:\n", file_path);
-  print_matrix(m);
+  printf("Matrices read from file %s:\n", file_path);
+  print_matrices(matrix_array);
   printf("\n");
 
-  free_matrix(&m);
+  free_matrices(&matrix_array);
 
   return 0;
 }
