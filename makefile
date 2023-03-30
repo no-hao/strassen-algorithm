@@ -11,30 +11,36 @@ CFLAGS = -Wall -Wextra -Werror -std=c99
 # Define the include path (where to look for header files)
 INCLUDES = -I./include
 
-# Define the target executable name
-TARGET = ./bin/matrix_app
+# Define the target executable names
+TARGET_APP = ./bin/matrix_app
+TARGET_CREATE_CSV = ./bin/create_csv
 
-# Use wildcard to collect all .c files in the src directory
-SOURCES = $(wildcard src/*.c)
+# Define the directories
+SRC_DIR = src
+BIN_DIR = bin
+OUTPUT_DIR = output
 
-# Replace the .c extension with .o for object files
-OBJECTS = $(SOURCES:.c=.o)
+# Define the sources and objects for create_csv
+CREATE_CSV_SOURCES = $(SRC_DIR)/create_csv.c
+CREATE_CSV_OBJECTS = $(CREATE_CSV_SOURCES:.c=.o)
 
-# Declare all and clean as phony targets
-# This tells Make that they don't produce a file with the same name as the target
-.PHONY: all clean
+# Create the output directory if it doesn't exist
+$(shell mkdir -p $(OUTPUT_DIR))
 
 # Default target: all
-all: $(TARGET)
+all: $(TARGET_APP) $(TARGET_CREATE_CSV)
 
 # Link object files to create the target executable
-$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
+$(TARGET_APP): $(OBJECTS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/combined.o
+
+$(TARGET_CREATE_CSV): $(CREATE_CSV_OBJECTS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ -lm
 
 # Compile .c files to .o files
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# Clean target: remove object files and the target executable
+# Clean target: remove object files and the target executables
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET_APP) $(CREATE_CSV_OBJECTS) $(TARGET_CREATE_CSV)

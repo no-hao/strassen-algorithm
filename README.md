@@ -3,18 +3,22 @@
 This project implements Strassen's algorithm for matrix multiplication and compares its performance to the brute-force method.
 The program is written in C and determines the optimal crossover point for switching between Strassen's algorithm and the brute-force method.
 
-## File/Folder Structure
+## File Structure
 
 ```
 strassen_matrix_multiplication/
  ├── bin/
+    ├── matrix_app
+    └── create_csv
  └── data/
     ├── matrix-20-pairs.csv
-    └── matrix-single-pair.csv
+    ├── matrix-single-pair.csv
+    └── matrix-3-pairs-of-8x8.csv
  └── include/
     ├── main.h
     ├── matrix.h
     ├── brute_force.h
+    ├── create_csv.h
     ├── combined.h
     └── strassen.h
  ├── output/
@@ -24,11 +28,11 @@ strassen_matrix_multiplication/
     ├── matrix.c
     ├── brute_force.c
     ├── combined.c
+    ├── create_csv.c
     └── strassen.c
 ├── Makefile
 └── README.md
 ```
-
 ### Folders
 
 | Folder       | Description                                                            |
@@ -42,7 +46,7 @@ strassen_matrix_multiplication/
 
 ### data
 
-This folder contains two example CSV files with matrices to be used as input data for the program.
+This folder contains two example CSV files with matrices as well as<br>the `create_csv` generated matrix data to be used as input data for the program.
 
 ### src
 
@@ -55,6 +59,27 @@ This folder contains the following source code files:
 | `brute_force.c` | Implements the brute-force matrix multiplication algorithm.        |
 | `combined.c`  | Implements the combined algorithm that switches<br>between Strassen's and brute-force methods based on the given crossover point. |
 | `strassen.c`  | Implements Strassen's matrix multiplication algorithm.                |
+| `create_csv.c` | Implements the functionality to generate CSV files with random<br>matrices for testing purposes. |
+
+
+### Generating Random Matrix CSV Files
+
+The `create_csv` program allows you to generate random matrix CSV files for testing purposes.<br>To build and run the `create_csv` program, follow these steps:
+
+1. Make sure you have a C compiler installed on your system (e.g., `gcc`).
+2. Navigate to the project root directory (`strassen_matrix_multiplication`).
+3. Run `make` to compile the project. The binary executable will be placed in the `bin` folder.
+4. Run the `create_csv` program using the following command:
+
+```bash
+./bin/create_csv [n] [pairs]
+```
+
+To run the `create_csv` program, you will need to specify the following arguments:
+
+`[n]`: the size of the matrix in the form of 2^n x 2^n<br>
+`[pairs]`: the number of matrix pairs to generate<br>
+The generated CSV file will be saved in the data folder with a<br>default naming convention: matrix-`[pairs]`-pairs-of-`[rows]`x`[cols]`.csv.
 
 ## Building and Running the Project
 
@@ -64,7 +89,7 @@ This folder contains the following source code files:
 4. Run the program using the following command:
 
 ```bash
-./bin/matrix_app [input_file] [output_file] [crossover_point] [n]
+./bin/matrix_app [input_file] [output_file] [crossover_point] [n_dimensions]
 ```
 
 To run the `matrix_app` program, you will need to specify the following arguments:
@@ -72,5 +97,5 @@ To run the `matrix_app` program, you will need to specify the following argument
 - `[input_file]`: the path to the input file
 - `[output_file]`: the path to the output file
 - `[crossover_point]`: the crossover point for the genetic algorithm
-- `[n]`: the size of the matrix in the form of 2^n x 2^n
+- `[n_dimensions]`: the size of the matrix in the form of 2^n x 2^n
 
