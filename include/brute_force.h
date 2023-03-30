@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-Matrix *multiply_matrices_brute_force(Matrix *a, Matrix *b);
+Matrix multiply_matrix_pairs_bf(Matrix a, Matrix b);
 
 #endif // !BRUTE_FORCE_H

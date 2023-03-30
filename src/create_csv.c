@@ -1,19 +1,26 @@
 #include "../include/create_csv.h"
+#include "../include/file_utils.h"
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 void write_random_matrix(FILE *file, int rows, int cols) {
+  Matrix matrix;
+  matrix.rows = rows;
+  matrix.cols = cols;
+  matrix.data = (float **)malloc(rows * sizeof(float *));
   for (int j = 0; j < rows; j++) {
+    matrix.data[j] = (float *)malloc(cols * sizeof(float));
     for (int k = 0; k < cols; k++) {
-      float rand_num = (float)rand() / (float)RAND_MAX * 9.0f;
-      fprintf(file, "%.0f", rand_num);
-      if (k < cols - 1) {
-        fprintf(file, ",");
-      }
+      matrix.data[j][k] = (float)rand() / (float)RAND_MAX * 9.0f;
     }
-    fprintf(file, "\n");
   }
+  write_matrix_to_file(file, matrix);
+  // Remember to free the memory allocated for the matrix data
+  for (int i = 0; i < rows; i++) {
+    free(matrix.data[i]);
+  }
+  free(matrix.data);
 }
 
 void write_separator_line(FILE *file, int cols) {

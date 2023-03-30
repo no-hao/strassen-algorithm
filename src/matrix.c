@@ -1,62 +1,5 @@
-#include "../include/matrix.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "../include/file_utils.h"
 #include <string.h>
-
-MatrixArray read_csv(const char *filename, int n) {
-  FILE *file = fopen(filename, "r");
-  if (!file) {
-    fprintf(stderr, "Error: Unable to open the file %s\n", filename);
-    exit(1);
-  }
-
-  int rows = 1 << n;
-  int cols = rows;
-
-  MatrixArray matrix_array = initialize_matrix_array();
-
-  int current_matrix = -1;
-  int row = 0;
-
-  char *line = NULL;
-  size_t len = 0;
-  ssize_t read;
-
-  int create_new_matrix = 1;
-
-  while ((read = getline(&line, &len, file)) != -1) {
-    if (is_blank_line(line, read)) {
-      if (create_new_matrix == 0) {
-        break;
-      }
-      continue;
-    }
-
-    create_new_matrix = 1;
-
-    if (row == 0) {
-      create_new_matrix = 0;
-      current_matrix++;
-      matrix_array.count++;
-      matrix_array.matrices =
-          add_matrix(matrix_array.matrices, current_matrix, rows, cols);
-    }
-
-    add_line_to_matrix(&matrix_array.matrices[current_matrix], line, cols, row);
-
-    row++;
-    if (row == rows) {
-      row = 0;
-    }
-  }
-
-  fclose(file);
-  if (line) {
-    free(line);
-  }
-
-  return matrix_array;
-}
 
 MatrixArray initialize_matrix_array() {
   MatrixArray matrix_array;
@@ -127,4 +70,32 @@ void free_matrices(MatrixArray *matrix_array) {
     matrix_array->matrices = NULL;
   }
   matrix_array->count = 0;
+}
+
+// Function to multiply a pair of matrices using the specified function
+Matrix multiply_matrix_pair(Matrix a, Matrix b,
+                            Matrix (*multiply_func)(Matrix, Matrix)) {
+  return multiply_func(a, b);
+}
+
+// Function to multiply matrices in pairs inside a MatrixArray using the
+// specified function
+MatrixArray multiply_matrix_array(MatrixArray input,
+                                  Matrix (*multiply_func)(Matrix, Matrix)) {
+  if (input.count % 2 != 0) {
+    printf(
+        "Error: odd number of matrices in input. Cannot multiply in pairs.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  MatrixArray output;
+  output.count = input.count / 2;
+  output.matrices = (Matrix *)malloc(output.count * sizeof(Matrix));
+
+  for (int i = 0; i < input.count; i += 2) {
+    output.matrices[i / 2] = multiply_matrix_pair(
+        input.matrices[i], input.matrices[i + 1], multiply_func);
+  }
+
+  return output;
 }

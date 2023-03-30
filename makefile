@@ -35,10 +35,11 @@ $(shell mkdir -p $(DATA_DIR))
 all: $(TARGET_APP) $(TARGET_CREATE_CSV)
 
 # Link object files to create the target executable
-$(TARGET_APP): $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/crossover.o
+$(TARGET_APP): $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/crossover.o $(SRC_DIR)/file_utils.o
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
 
-$(TARGET_CREATE_CSV): $(CREATE_CSV_OBJECTS)
+
+$(TARGET_CREATE_CSV): $(CREATE_CSV_OBJECTS) $(SRC_DIR)/file_utils.o $(SRC_DIR)/matrix.o
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ -lm
 
 # Compile .c files to .o files
