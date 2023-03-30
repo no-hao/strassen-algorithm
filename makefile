@@ -17,6 +17,7 @@ TARGET_CREATE_CSV = ./bin/create_csv
 
 # Define the directories
 SRC_DIR = src
+DATA_DIR = data
 BIN_DIR = bin
 OUTPUT_DIR = output
 
@@ -27,12 +28,15 @@ CREATE_CSV_OBJECTS = $(CREATE_CSV_SOURCES:.c=.o)
 # Create the output directory if it doesn't exist
 $(shell mkdir -p $(OUTPUT_DIR))
 
+# Create the data directory if it doesn't exist
+$(shell mkdir -p $(DATA_DIR))
+
 # Default target: all
 all: $(TARGET_APP) $(TARGET_CREATE_CSV)
 
 # Link object files to create the target executable
-$(TARGET_APP): $(OBJECTS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/combined.o
+$(TARGET_APP): $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/crossover.o
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
 
 $(TARGET_CREATE_CSV): $(CREATE_CSV_OBJECTS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ -lm
@@ -43,4 +47,4 @@ $(TARGET_CREATE_CSV): $(CREATE_CSV_OBJECTS)
 
 # Clean target: remove object files and the target executables
 clean:
-	rm -f $(OBJECTS) $(TARGET_APP) $(CREATE_CSV_OBJECTS) $(TARGET_CREATE_CSV)
+	rm -f $(SRC_DIR)/*.o $(TARGET_APP) $(TARGET_CREATE_CSV)

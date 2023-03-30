@@ -19,7 +19,7 @@ strassen_matrix_multiplication/
     ├── matrix.h
     ├── brute_force.h
     ├── create_csv.h
-    ├── combined.h
+    ├── crossover.h
     └── strassen.h
  ├── output/
  ├── results/
@@ -27,7 +27,7 @@ strassen_matrix_multiplication/
     ├── main.c
     ├── matrix.c
     ├── brute_force.c
-    ├── combined.c
+    ├── crossover.c
     ├── create_csv.c
     └── strassen.c
 ├── Makefile
@@ -57,7 +57,7 @@ This folder contains the following source code files:
 | `main.c`      | Contains the main function to run the program and perform the experiments. |
 | `matrix.c`    | Handles reading and writing matrices from/to CSV files,<br>and other matrix-related utilities. |
 | `brute_force.c` | Implements the brute-force matrix multiplication algorithm.        |
-| `combined.c`  | Implements the combined algorithm that switches<br>between Strassen's and brute-force methods based on the given crossover point. |
+| `crossover.c`  | Implements the crossover algorithm that switches<br>between Strassen's and brute-force methods based on the given crossover point. |
 | `strassen.c`  | Implements Strassen's matrix multiplication algorithm.                |
 | `create_csv.c` | Implements the functionality to generate CSV files with random<br>matrices for testing purposes. |
 
