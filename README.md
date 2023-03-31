@@ -1,4 +1,4 @@
-# Strassen Matrix Multiplication
+# Strassen's algorithm
 
 This project implements Strassen's algorithm for matrix multiplication and compares its performance to the<br>brute-force method. The program is written in C and determines the optimal crossover point for switching<br>between Strassen's algorithm and the brute-force method.
 

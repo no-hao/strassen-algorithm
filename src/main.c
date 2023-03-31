@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
 
   free(output_file);
 
-  free_matrices(&input_matrices);
-  free_matrices(&output_matrices);
+  free_matrix_array(&input_matrices);
+  free_matrix_array(&output_matrices);
 
   return 0;
 }
