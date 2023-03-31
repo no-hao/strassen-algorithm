@@ -1,5 +1,6 @@
 #include "../include/create_csv.h"
 #include "../include/file_utils.h"
+#include <stdlib.h>
 #include <time.h>
 
 void write_random_matrix(FILE *file, int rows, int cols) {

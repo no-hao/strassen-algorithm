@@ -1,5 +1,6 @@
 #include "../include/brute_force.h"
 #include "../include/file_utils.h"
+#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -26,6 +27,11 @@ int main(int argc, char *argv[]) {
 
   printf("Output matrices:\n");
   print_matrices(output_matrices);
+  printf("\n");
+
+  // Call the print_elapsed_times function here
+  printf("Elapsed times for each pair of matrix multiplications:\n");
+  print_elapsed_times(output_matrices);
   printf("\n");
 
   char *output_file = generate_output_file_path(file_path);

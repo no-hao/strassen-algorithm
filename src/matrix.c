@@ -1,6 +1,7 @@
 #include "../include/file_utils.h"
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 MatrixArray initialize_matrix_array() {
   MatrixArray matrix_array;
@@ -110,11 +111,22 @@ MatrixArray multiply_matrix_array(MatrixArray input,
   MatrixArray output;
   output.num_matrices = input.num_matrices / 2;
   output.matrices = (Matrix *)malloc(output.num_matrices * sizeof(Matrix));
+  output.elapsed_times = (double *)malloc(output.num_matrices * sizeof(double));
 
   for (int i = 0; i < input.num_matrices; i += 2) {
+    clock_t start = clock();
     output.matrices[i / 2] = multiply_matrix_pair(
         input.matrices[i], input.matrices[i + 1], multiply_func);
+    clock_t end = clock();
+    output.elapsed_times[i / 2] = (double)(end - start) / CLOCKS_PER_SEC;
   }
 
   return output;
+}
+
+void print_elapsed_times(MatrixArray matrix_array) {
+  printf("Elapsed times (seconds):\n");
+  for (int i = 0; i < matrix_array.num_matrices; i++) {
+    printf("Matrix pair %d: %.6f\n", i + 1, matrix_array.elapsed_times[i]);
+  }
 }

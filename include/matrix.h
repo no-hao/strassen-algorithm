@@ -10,6 +10,7 @@ typedef struct {
 typedef struct {
   int num_matrices;
   Matrix *matrices;
+  double *elapsed_times;
 } MatrixArray;
 
 MatrixArray initialize_matrix_array();
@@ -31,5 +32,7 @@ Matrix multiply_matrix_pair(Matrix a, Matrix b,
 
 MatrixArray multiply_matrix_array(MatrixArray input,
                                   Matrix (*multiply_func)(Matrix, Matrix));
+
+void print_elapsed_times(MatrixArray matrix_array);
 
 #endif // MATRIX_H

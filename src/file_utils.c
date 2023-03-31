@@ -1,4 +1,5 @@
 #include "../include/file_utils.h"
+#include <stdlib.h>
 #include <string.h>
 
 char *generate_output_file_path(const char *input_file_path) {
