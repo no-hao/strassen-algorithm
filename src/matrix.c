@@ -27,10 +27,54 @@ Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols) {
 }
 
 // TODO: implement matrix addition.
-Matrix add_matrices(Matrix a, Matrix b);
+Matrix add_matrices(Matrix a, Matrix b) {
+  if (a.rows != b.rows || a.cols != b.cols) {
+    printf("Error: Matrices cannot be added (dimension mismatch).\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Matrix result;
+  result.rows = a.rows;
+  result.cols = a.cols;
+  result.data = (float **)malloc(result.rows * sizeof(float *));
+  for (int i = 0; i < result.rows; i++) {
+    result.data[i] = (float *)malloc(result.cols * sizeof(float));
+    for (int j = 0; j < result.cols; j++) {
+      result.data[i][j] = a.data[i][j] + b.data[i][j];
+    }
+  }
+
+  return result;
+}
 
 // TODO: combine strassen matrices.
-Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d);
+Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d) {
+  if (a.rows != b.rows || a.rows != c.rows || a.rows != d.rows ||
+      a.cols != b.cols || a.cols != c.cols || a.cols != d.cols) {
+    printf("Error: Matrices cannot be combined (dimension mismatch).\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Matrix result;
+  result.rows = a.rows * 2;
+  result.cols = a.cols * 2;
+  result.data = (float **)malloc(result.rows * sizeof(float *));
+
+  for (int i = 0; i < result.rows; i++) {
+    result.data[i] = (float *)malloc(result.cols * sizeof(float));
+  }
+
+  for (int i = 0; i < a.rows; i++) {
+    for (int j = 0; j < a.cols; j++) {
+      result.data[i][j] = a.data[i][j];
+      result.data[i][j + a.cols] = b.data[i][j];
+      result.data[i + a.rows][j] = c.data[i][j];
+      result.data[i + a.rows][j + a.cols] = d.data[i][j];
+    }
+  }
+
+  return result;
+}
 
 void free_matrix(Matrix *matrix) {
   if (matrix->data) {
@@ -166,7 +210,52 @@ void print_matrices(MatrixArray matrix_array) {
 
 // TODO: implement subviding of strassen matrices.
 void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
-                      Matrix *d);
+                      Matrix *d) {
+  int half_rows = matrix.rows / 2;
+  int half_cols = matrix.cols / 2;
+
+  *a = (Matrix){half_rows, half_cols, NULL};
+  *b = (Matrix){half_rows, half_cols, NULL};
+  *c = (Matrix){half_rows, half_cols, NULL};
+  *d = (Matrix){half_rows, half_cols, NULL};
+
+  a->data = (float **)malloc(half_rows * sizeof(float *));
+  b->data = (float **)malloc(half_rows * sizeof(float *));
+  c->data = (float **)malloc(half_rows * sizeof(float *));
+  d->data = (float **)malloc(half_rows * sizeof(float *));
+
+  for (int i = 0; i < half_rows; i++) {
+    a->data[i] = (float *)malloc(half_cols * sizeof(float));
+    b->data[i] = (float *)malloc(half_cols * sizeof(float));
+    c->data[i] = (float *)malloc(half_cols * sizeof(float));
+    d->data[i] = (float *)malloc(half_cols * sizeof(float));
+
+    for (int j = 0; j < half_cols; j++) {
+      a->data[i][j] = matrix.data[i][j];
+      b->data[i][j] = matrix.data[i][j + half_cols];
+      c->data[i][j] = matrix.data[i + half_rows][j];
+      d->data[i][j] = matrix.data[i + half_rows][j + half_cols];
+    }
+  }
+}
 
 // TODO: implement subtracting matrices
-Matrix subtract_matrices(Matrix a, Matrix b);
+Matrix subtract_matrices(Matrix a, Matrix b) {
+  if (a.rows != b.rows || a.cols != b.cols) {
+    printf("Error: Matrices cannot be subtracted (dimension mismatch).\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Matrix result;
+  result.rows = a.rows;
+  result.cols = a.cols;
+  result.data = (float **)malloc(result.rows * sizeof(float *));
+  for (int i = 0; i < result.rows; i++) {
+    result.data[i] = (float *)malloc(result.cols * sizeof(float));
+    for (int j = 0; j < result.cols; j++) {
+      result.data[i][j] = a.data[i][j] - b.data[i][j];
+    }
+  }
+
+  return result;
+}
