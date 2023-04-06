@@ -127,6 +127,26 @@ MatrixArray read_csv(const char *filename) {
   return matrix_array;
 }
 
+void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row) {
+  char *saveptr;
+  char *token = strtok_r((char *)line, ",", &saveptr);
+  int col = 0;
+  while (token && col < cols) {
+    matrix->data[row][col] = atof(token);
+    col++;
+    token = strtok_r(NULL, ",", &saveptr);
+  }
+}
+
+int is_blank_line(const char *line, int len) {
+  for (int i = 0; i < len; i++) {
+    if (line[i] != ',' && line[i] != '\n' && line[i] != '\r') {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 int count_columns(const char *line) {
   int cols = 1;
   for (int i = 0; line[i] != '\0'; i++) {
@@ -146,6 +166,45 @@ Matrix create_matrix(int rows, int cols) {
     matrix.data[i] = calloc(cols, sizeof(double));
   }
   return matrix;
+}
+
+int get_max_number_width(MatrixArray matrix_array) {
+  int max_width = 0;
+  for (int m = 0; m < matrix_array.num_matrices; m++) {
+    Matrix matrix = matrix_array.matrices[m];
+    for (int i = 0; i < matrix.rows; i++) {
+      for (int j = 0; j < matrix.cols; j++) {
+        int width = snprintf(NULL, 0, "%.0f", matrix.data[i][j]);
+        if (width > max_width) {
+          max_width = width;
+        }
+      }
+    }
+  }
+  return max_width;
+}
+
+void print_matrices(MatrixArray matrix_array) {
+  int max_width = get_max_number_width(matrix_array);
+
+  for (int m = 0; m < matrix_array.num_matrices; m++) {
+    printf("Matrix %d:\n", m + 1);
+    Matrix matrix = matrix_array.matrices[m];
+    for (int i = 0; i < matrix.rows; i++) {
+      for (int j = 0; j < matrix.cols; j++) {
+        printf("%*.0f ", max_width, matrix.data[i][j]);
+      }
+      printf("\n");
+    }
+    printf("\n");
+  }
+}
+
+void print_elapsed_times(MatrixArray matrix_array) {
+  printf("Elapsed times (seconds):\n");
+  for (int i = 0; i < matrix_array.num_matrices; i++) {
+    printf("Matrix pair %d: %.6f\n", i + 1, matrix_array.elapsed_times[i]);
+  }
 }
 
 void print_results(const char *file_path, MatrixArray input_matrices,

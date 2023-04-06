@@ -49,9 +49,8 @@ Matrix strassen_algorithm(Matrix a, Matrix b) {
   Matrix result = combine_matrices(c11, c12, c21, c22);
 
   // Free the allocated memory for intermediate matrices
-  free_multiple_matrices(16, &p1, &p2, &p3, &p4, &p5, &p6, &p7, &c11, &c12,
-                         &c21, &c22, &a11, &a12, &a21, &a22, &b11, &b12, &b21,
-                         &b22);
+  free_strassen_matrices(&p1, &p2, &p3, &p4, &p5, &p6, &p7, &c11, &c12, &c21,
+                         &c22, &a11, &a12, &a21, &a22, &b11, &b12, &b21, &b22);
 
   return result;
 }

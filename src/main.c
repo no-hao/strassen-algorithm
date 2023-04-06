@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   }
 
   MatrixArray output_matrices_bf =
-      multiply_matrix_array(input_matrices, multiply_matrix_pairs_bf);
+      multiply_matrix_array(input_matrices, brute_force_algorithm);
 
   MatrixArray output_matrices_strassen =
       multiply_matrix_array(input_matrices, strassen_algorithm);

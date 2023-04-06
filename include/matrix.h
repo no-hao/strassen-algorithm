@@ -13,8 +13,6 @@ typedef struct {
   double *elapsed_times;
 } MatrixArray;
 
-void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row);
-
 Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols);
 
 Matrix add_matrices(Matrix a, Matrix b);
@@ -27,11 +25,9 @@ void free_matrix_array(MatrixArray *matrix_array);
 
 void free_multiple_matrices(int count, ...);
 
-int get_max_number_width(MatrixArray matrix_array);
-
 MatrixArray initialize_matrix_array();
 
-int is_blank_line(const char *line, int len);
+Matrix subtract_matrices(Matrix a, Matrix b);
 
 MatrixArray multiply_matrix_array(MatrixArray input,
                                   Matrix (*multiply_func)(Matrix, Matrix));
@@ -39,13 +35,13 @@ MatrixArray multiply_matrix_array(MatrixArray input,
 Matrix multiply_matrix_pair(Matrix a, Matrix b,
                             Matrix (*multiply_func)(Matrix, Matrix));
 
-void print_elapsed_times(MatrixArray matrix_array);
-
-void print_matrices(MatrixArray matrix_array);
-
 void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
                       Matrix *d);
 
-Matrix subtract_matrices(Matrix a, Matrix b);
+void free_strassen_matrices(Matrix *p1, Matrix *p2, Matrix *p3, Matrix *p4,
+                            Matrix *p5, Matrix *p6, Matrix *p7, Matrix *c11,
+                            Matrix *c12, Matrix *c21, Matrix *c22, Matrix *a11,
+                            Matrix *a12, Matrix *a21, Matrix *a22, Matrix *b11,
+                            Matrix *b12, Matrix *b21, Matrix *b22);
 
 #endif // MATRIX_H

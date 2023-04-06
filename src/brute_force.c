@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // Function to multiply a pair of matrices
-Matrix multiply_matrix_pairs_bf(Matrix a, Matrix b) {
+Matrix brute_force_algorithm(Matrix a, Matrix b) {
   if (a.cols != b.rows) {
     printf("Error: incompatible matrices for multiplication.\n");
     exit(EXIT_FAILURE);

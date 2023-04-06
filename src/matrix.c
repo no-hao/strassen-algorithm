@@ -4,15 +4,11 @@
 #include <string.h>
 #include <time.h>
 
-void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row) {
-  char *saveptr;
-  char *token = strtok_r((char *)line, ",", &saveptr);
-  int col = 0;
-  while (token && col < cols) {
-    matrix->data[row][col] = atof(token);
-    col++;
-    token = strtok_r(NULL, ",", &saveptr);
-  }
+MatrixArray initialize_matrix_array() {
+  MatrixArray matrix_array;
+  matrix_array.num_matrices = 0;
+  matrix_array.matrices = NULL;
+  return matrix_array;
 }
 
 Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols) {
@@ -49,6 +45,92 @@ Matrix add_matrices(Matrix a, Matrix b) {
   }
 
   return result;
+}
+
+Matrix subtract_matrices(Matrix a, Matrix b) {
+  if (a.rows != b.rows || a.cols != b.cols) {
+    printf("Error: Matrices cannot be subtracted (dimension mismatch).\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Matrix result;
+  result.rows = a.rows;
+  result.cols = a.cols;
+  result.data = (float **)malloc(result.rows * sizeof(float *));
+  for (int i = 0; i < result.rows; i++) {
+    float *a_row = a.data[i];
+    float *b_row = b.data[i];
+    float *res_row = (float *)malloc(result.cols * sizeof(float));
+    result.data[i] = res_row;
+
+    for (int j = 0; j < result.cols; j++) {
+      *(res_row + j) = *(a_row + j) - *(b_row + j);
+    }
+  }
+
+  return result;
+}
+
+// Function to multiply a pair of matrices using the specified function
+Matrix multiply_matrix_pair(Matrix a, Matrix b,
+                            Matrix (*multiply_func)(Matrix, Matrix)) {
+  return multiply_func(a, b);
+}
+
+// Function to multiply matrices in pairs inside a MatrixArray using the
+// specified function
+MatrixArray multiply_matrix_array(MatrixArray input,
+                                  Matrix (*multiply_func)(Matrix, Matrix)) {
+  if (input.num_matrices % 2 != 0) {
+    printf(
+        "Error: odd number of matrices in input. Cannot multiply in pairs.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  MatrixArray output;
+  output.num_matrices = input.num_matrices / 2;
+  output.matrices = (Matrix *)malloc(output.num_matrices * sizeof(Matrix));
+  output.elapsed_times = (double *)malloc(output.num_matrices * sizeof(double));
+
+  for (int i = 0; i < input.num_matrices; i += 2) {
+    clock_t start = clock();
+    output.matrices[i / 2] = multiply_matrix_pair(
+        input.matrices[i], input.matrices[i + 1], multiply_func);
+    clock_t end = clock();
+    output.elapsed_times[i / 2] = (double)(end - start) / CLOCKS_PER_SEC;
+  }
+
+  return output;
+}
+
+void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
+                      Matrix *d) {
+  int half_rows = matrix.rows / 2;
+  int half_cols = matrix.cols / 2;
+
+  *a = (Matrix){half_rows, half_cols, NULL};
+  *b = (Matrix){half_rows, half_cols, NULL};
+  *c = (Matrix){half_rows, half_cols, NULL};
+  *d = (Matrix){half_rows, half_cols, NULL};
+
+  a->data = (float **)malloc(half_rows * sizeof(float *));
+  b->data = (float **)malloc(half_rows * sizeof(float *));
+  c->data = (float **)malloc(half_rows * sizeof(float *));
+  d->data = (float **)malloc(half_rows * sizeof(float *));
+
+  for (int i = 0; i < half_rows; i++) {
+    a->data[i] = (float *)malloc(half_cols * sizeof(float));
+    b->data[i] = (float *)malloc(half_cols * sizeof(float));
+    c->data[i] = (float *)malloc(half_cols * sizeof(float));
+    d->data[i] = (float *)malloc(half_cols * sizeof(float));
+
+    for (int j = 0; j < half_cols; j++) {
+      a->data[i][j] = matrix.data[i][j];
+      b->data[i][j] = matrix.data[i][j + half_cols];
+      c->data[i][j] = matrix.data[i + half_rows][j];
+      d->data[i][j] = matrix.data[i + half_rows][j + half_cols];
+    }
+  }
 }
 
 Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d) {
@@ -118,155 +200,28 @@ void free_matrix_array(MatrixArray *matrix_array) {
   matrix_array->num_matrices = 0;
 }
 
-void free_multiple_matrices(int count, ...) {
-  va_list args;
-  va_start(args, count);
-
-  for (int i = 0; i < count; i++) {
-    Matrix *matrix = va_arg(args, Matrix *);
-    free_matrix(matrix);
-  }
-
-  va_end(args);
-}
-
-int get_max_number_width(MatrixArray matrix_array) {
-  int max_width = 0;
-  for (int m = 0; m < matrix_array.num_matrices; m++) {
-    Matrix matrix = matrix_array.matrices[m];
-    for (int i = 0; i < matrix.rows; i++) {
-      for (int j = 0; j < matrix.cols; j++) {
-        int width = snprintf(NULL, 0, "%.0f", matrix.data[i][j]);
-        if (width > max_width) {
-          max_width = width;
-        }
-      }
-    }
-  }
-  return max_width;
-}
-
-MatrixArray initialize_matrix_array() {
-  MatrixArray matrix_array;
-  matrix_array.num_matrices = 0;
-  matrix_array.matrices = NULL;
-  return matrix_array;
-}
-
-int is_blank_line(const char *line, int len) {
-  for (int i = 0; i < len; i++) {
-    if (line[i] != ',' && line[i] != '\n' && line[i] != '\r') {
-      return 0;
-    }
-  }
-  return 1;
-}
-
-// Function to multiply matrices in pairs inside a MatrixArray using the
-// specified function
-MatrixArray multiply_matrix_array(MatrixArray input,
-                                  Matrix (*multiply_func)(Matrix, Matrix)) {
-  if (input.num_matrices % 2 != 0) {
-    printf(
-        "Error: odd number of matrices in input. Cannot multiply in pairs.\n");
-    exit(EXIT_FAILURE);
-  }
-
-  MatrixArray output;
-  output.num_matrices = input.num_matrices / 2;
-  output.matrices = (Matrix *)malloc(output.num_matrices * sizeof(Matrix));
-  output.elapsed_times = (double *)malloc(output.num_matrices * sizeof(double));
-
-  for (int i = 0; i < input.num_matrices; i += 2) {
-    clock_t start = clock();
-    output.matrices[i / 2] = multiply_matrix_pair(
-        input.matrices[i], input.matrices[i + 1], multiply_func);
-    clock_t end = clock();
-    output.elapsed_times[i / 2] = (double)(end - start) / CLOCKS_PER_SEC;
-  }
-
-  return output;
-}
-
-// Function to multiply a pair of matrices using the specified function
-Matrix multiply_matrix_pair(Matrix a, Matrix b,
-                            Matrix (*multiply_func)(Matrix, Matrix)) {
-  return multiply_func(a, b);
-}
-
-void print_elapsed_times(MatrixArray matrix_array) {
-  printf("Elapsed times (seconds):\n");
-  for (int i = 0; i < matrix_array.num_matrices; i++) {
-    printf("Matrix pair %d: %.6f\n", i + 1, matrix_array.elapsed_times[i]);
-  }
-}
-
-void print_matrices(MatrixArray matrix_array) {
-  int max_width = get_max_number_width(matrix_array);
-
-  for (int m = 0; m < matrix_array.num_matrices; m++) {
-    printf("Matrix %d:\n", m + 1);
-    Matrix matrix = matrix_array.matrices[m];
-    for (int i = 0; i < matrix.rows; i++) {
-      for (int j = 0; j < matrix.cols; j++) {
-        printf("%*.0f ", max_width, matrix.data[i][j]);
-      }
-      printf("\n");
-    }
-    printf("\n");
-  }
-}
-
-void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
-                      Matrix *d) {
-  int half_rows = matrix.rows / 2;
-  int half_cols = matrix.cols / 2;
-
-  *a = (Matrix){half_rows, half_cols, NULL};
-  *b = (Matrix){half_rows, half_cols, NULL};
-  *c = (Matrix){half_rows, half_cols, NULL};
-  *d = (Matrix){half_rows, half_cols, NULL};
-
-  a->data = (float **)malloc(half_rows * sizeof(float *));
-  b->data = (float **)malloc(half_rows * sizeof(float *));
-  c->data = (float **)malloc(half_rows * sizeof(float *));
-  d->data = (float **)malloc(half_rows * sizeof(float *));
-
-  for (int i = 0; i < half_rows; i++) {
-    a->data[i] = (float *)malloc(half_cols * sizeof(float));
-    b->data[i] = (float *)malloc(half_cols * sizeof(float));
-    c->data[i] = (float *)malloc(half_cols * sizeof(float));
-    d->data[i] = (float *)malloc(half_cols * sizeof(float));
-
-    for (int j = 0; j < half_cols; j++) {
-      a->data[i][j] = matrix.data[i][j];
-      b->data[i][j] = matrix.data[i][j + half_cols];
-      c->data[i][j] = matrix.data[i + half_rows][j];
-      d->data[i][j] = matrix.data[i + half_rows][j + half_cols];
-    }
-  }
-}
-
-Matrix subtract_matrices(Matrix a, Matrix b) {
-  if (a.rows != b.rows || a.cols != b.cols) {
-    printf("Error: Matrices cannot be subtracted (dimension mismatch).\n");
-    exit(EXIT_FAILURE);
-  }
-
-  Matrix result;
-  result.rows = a.rows;
-  result.cols = a.cols;
-  result.data = (float **)malloc(result.rows * sizeof(float *));
-  for (int i = 0; i < result.rows; i++) {
-    float *a_row = a.data[i];
-    float *b_row = b.data[i];
-    float *res_row = (float *)malloc(result.cols * sizeof(float));
-    result.data[i] = res_row;
-
-    for (int j = 0; j < result.cols; j++) {
-      *(res_row + j) = *(a_row + j) - *(b_row + j);
-    }
-  }
-
-  return result;
+void free_strassen_matrices(Matrix *p1, Matrix *p2, Matrix *p3, Matrix *p4,
+                            Matrix *p5, Matrix *p6, Matrix *p7, Matrix *c11,
+                            Matrix *c12, Matrix *c21, Matrix *c22, Matrix *a11,
+                            Matrix *a12, Matrix *a21, Matrix *a22, Matrix *b11,
+                            Matrix *b12, Matrix *b21, Matrix *b22) {
+  free_matrix(p1);
+  free_matrix(p2);
+  free_matrix(p3);
+  free_matrix(p4);
+  free_matrix(p5);
+  free_matrix(p6);
+  free_matrix(p7);
+  free_matrix(c11);
+  free_matrix(c12);
+  free_matrix(c21);
+  free_matrix(c22);
+  free_matrix(a11);
+  free_matrix(a12);
+  free_matrix(a21);
+  free_matrix(a22);
+  free_matrix(b11);
+  free_matrix(b12);
+  free_matrix(b21);
+  free_matrix(b22);
 }
