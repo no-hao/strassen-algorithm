@@ -90,13 +90,10 @@ The generated CSV file will be saved in the data folder with a<br>default naming
 4. Run the program using the following command:
 
 ```bash
-./bin/matrix_app [input_file] [crossover_point] [n_dimensions]
+./bin/matrix_app [input_file] [crossover_point]
 ```
 
 To run the `matrix_app` program, you will need to specify the following arguments:
 
 - `[input_file]`: the path to the input file
-- `[output_file]`: the path to the output file
 - `[crossover_point]`: the crossover point for the genetic algorithm
-- `[n_dimensions]`: the size of the matrix in the form of 2^n x 2^n
-
