@@ -5,12 +5,13 @@
 #include <time.h>
 
 void add_line_to_matrix(Matrix *matrix, const char *line, int cols, int row) {
-  char *token = strtok((char *)line, ",");
+  char *saveptr;
+  char *token = strtok_r((char *)line, ",", &saveptr);
   int col = 0;
   while (token && col < cols) {
     matrix->data[row][col] = atof(token);
     col++;
-    token = strtok(NULL, ",");
+    token = strtok_r(NULL, ",", &saveptr);
   }
 }
 
@@ -26,7 +27,6 @@ Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols) {
   return matrices;
 }
 
-// TODO: implement matrix addition.
 Matrix add_matrices(Matrix a, Matrix b) {
   if (a.rows != b.rows || a.cols != b.cols) {
     printf("Error: Matrices cannot be added (dimension mismatch).\n");
@@ -38,16 +38,19 @@ Matrix add_matrices(Matrix a, Matrix b) {
   result.cols = a.cols;
   result.data = (float **)malloc(result.rows * sizeof(float *));
   for (int i = 0; i < result.rows; i++) {
-    result.data[i] = (float *)malloc(result.cols * sizeof(float));
+    float *a_row = a.data[i];
+    float *b_row = b.data[i];
+    float *res_row = (float *)malloc(result.cols * sizeof(float));
+    result.data[i] = res_row;
+
     for (int j = 0; j < result.cols; j++) {
-      result.data[i][j] = a.data[i][j] + b.data[i][j];
+      *(res_row + j) = *(a_row + j) + *(b_row + j);
     }
   }
 
   return result;
 }
 
-// TODO: combine strassen matrices.
 Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d) {
   if (a.rows != b.rows || a.rows != c.rows || a.rows != d.rows ||
       a.cols != b.cols || a.cols != c.cols || a.cols != d.cols) {
@@ -60,16 +63,22 @@ Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d) {
   result.cols = a.cols * 2;
   result.data = (float **)malloc(result.rows * sizeof(float *));
 
-  for (int i = 0; i < result.rows; i++) {
-    result.data[i] = (float *)malloc(result.cols * sizeof(float));
-  }
+  int second_half_offset = a.cols;
 
-  for (int i = 0; i < a.rows; i++) {
+  for (int i = 0; i < result.rows; i++) {
+    float *res_row = (float *)malloc(result.cols * sizeof(float));
+    result.data[i] = res_row;
+
+    float *src_row = (i < a.rows) ? a.data[i] : c.data[i - a.rows];
+
     for (int j = 0; j < a.cols; j++) {
-      result.data[i][j] = a.data[i][j];
-      result.data[i][j + a.cols] = b.data[i][j];
-      result.data[i + a.rows][j] = c.data[i][j];
-      result.data[i + a.rows][j + a.cols] = d.data[i][j];
+      *(res_row + j) = *(src_row + j);
+    }
+
+    src_row = (i < b.rows) ? b.data[i] : d.data[i - b.rows];
+
+    for (int j = 0; j < b.cols; j++) {
+      *(res_row + j + second_half_offset) = *(src_row + j);
     }
   }
 
@@ -208,7 +217,6 @@ void print_matrices(MatrixArray matrix_array) {
   }
 }
 
-// TODO: implement subviding of strassen matrices.
 void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
                       Matrix *d) {
   int half_rows = matrix.rows / 2;
@@ -239,7 +247,6 @@ void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
   }
 }
 
-// TODO: implement subtracting matrices
 Matrix subtract_matrices(Matrix a, Matrix b) {
   if (a.rows != b.rows || a.cols != b.cols) {
     printf("Error: Matrices cannot be subtracted (dimension mismatch).\n");
@@ -251,9 +258,13 @@ Matrix subtract_matrices(Matrix a, Matrix b) {
   result.cols = a.cols;
   result.data = (float **)malloc(result.rows * sizeof(float *));
   for (int i = 0; i < result.rows; i++) {
-    result.data[i] = (float *)malloc(result.cols * sizeof(float));
+    float *a_row = a.data[i];
+    float *b_row = b.data[i];
+    float *res_row = (float *)malloc(result.cols * sizeof(float));
+    result.data[i] = res_row;
+
     for (int j = 0; j < result.cols; j++) {
-      result.data[i][j] = a.data[i][j] - b.data[i][j];
+      *(res_row + j) = *(a_row + j) - *(b_row + j);
     }
   }
 

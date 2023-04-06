@@ -20,4 +20,8 @@ int count_columns(const char *line);
 
 Matrix create_matrix(int rows, int cols);
 
+void print_results(const char *file_path, MatrixArray input_matrices,
+                   MatrixArray output_matrices_bf,
+                   MatrixArray output_matrices_strassen);
+
 #endif

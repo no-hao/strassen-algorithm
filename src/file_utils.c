@@ -147,3 +147,29 @@ Matrix create_matrix(int rows, int cols) {
   }
   return matrix;
 }
+
+void print_results(const char *file_path, MatrixArray input_matrices,
+                   MatrixArray output_matrices_bf,
+                   MatrixArray output_matrices_strassen) {
+  printf("Matrices read from file %s:\n", file_path);
+  print_matrices(input_matrices);
+  printf("\n");
+
+  printf("Output matrices (Brute Force):\n");
+  print_matrices(output_matrices_bf);
+  printf("\n");
+
+  printf("Output matrices (Strassen Algorithm):\n");
+  print_matrices(output_matrices_strassen);
+  printf("\n");
+
+  printf(
+      "Elapsed times for each pair of matrix multiplications (Brute Force):\n");
+  print_elapsed_times(output_matrices_bf);
+  printf("\n");
+
+  printf("Elapsed times for each pair of matrix multiplications (Strassen "
+         "Algorithm):\n");
+  print_elapsed_times(output_matrices_strassen);
+  printf("\n");
+}

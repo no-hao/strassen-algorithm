@@ -10,8 +10,7 @@ strassen-algorithm/
     ├── matrix_app
     └── create_csv
  └── data/
-    ├── matrix-20-pairs.csv
-    ├── matrix-single-pair.csv
+    ├── matrix-1-pairs-of-2x2.csv
     └── matrix-3-pairs-of-8x8.csv
  └── include/
     ├── brute_force.h
@@ -78,8 +77,8 @@ The `create_csv` program allows you to generate random matrix CSV files for test
 
 To run the `create_csv` program, you will need to specify the following arguments:
 
-`[n]`: the size of the matrix in the form of 2^n x 2^n<br>
-`[pairs]`: the number of matrix pairs to generate<br>
+`n`: the size of the matrix in the form of 2^n x 2^n<br>
+`pairs`: the number of matrix pairs to generate<br>
 The generated CSV file will be saved in the data folder with a<br>default naming convention: matrix-`[pairs]`-pairs-of-`[rows]`x`[cols]`.csv.
 
 ## Building and Running the Project
@@ -90,10 +89,19 @@ The generated CSV file will be saved in the data folder with a<br>default naming
 4. Run the program using the following command:
 
 ```bash
-./bin/matrix_app [input_file] [crossover_point]
+./bin/matrix_app [input_file] [crossover_point] [-p]
 ```
 
-To run the `matrix_app` program, you will need to specify the following arguments:
+To run the matrix_app program, you will need to specify the following arguments:
 
-- `[input_file]`: the path to the input file
-- `[crossover_point]`: the crossover point for the genetic algorithm
+`input_file`: the path to the input file<br>
+`crossover_point`: the crossover point for the genetic algorithm<br>
+`-p`: an optional flag that can be used to print detailed results, including the matrices read from the input file,<br>output matrices, and elapsed times for each multiplication method (not best to set this for large values of n).
+
+If you include the -p flag, the program will print detailed results, such as:
+
+`-` The matrices read from the input file<br>
+`-` The output matrices obtained using both the brute force and Strassen algorithms<br>
+`-` The elapsed times for each pair of matrix multiplications<br>
+
+This can be helpful for debugging and understanding the performance of the implemented algorithms.<br>If the -p flag is not provided, the program will only print the file paths where the output matrices are saved.

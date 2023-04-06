@@ -3,18 +3,17 @@
 #include "../include/matrix.h"
 #include "../include/strassen.h"
 #include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
-  // TODO: make sure we implement crossover_point and appropriate expected
-  // arguments.
-  if (argc != 3) {
-    fprintf(stderr, "Usage: %s <matrix_csv_file> <crossover_point>\n", argv[0]);
+  if (argc < 3 || argc > 4) {
+    fprintf(stderr, "Usage: %s <matrix_csv_file> <crossover_point> [-p]\n",
+            argv[0]);
     return 1;
   }
 
   const char *file_path = argv[1];
-  // TODO: this will likely be the crossover_point.
-  // int crossover_point = atoi(argv[2]);
+  int print_flag = (argc == 4) && strcmp(argv[3], "-p") == 0;
 
   MatrixArray input_matrices = read_csv(file_path);
 
@@ -23,33 +22,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  printf("Matrices read from file %s:\n", file_path);
-  print_matrices(input_matrices);
-  printf("\n");
-
   MatrixArray output_matrices_bf =
       multiply_matrix_array(input_matrices, multiply_matrix_pairs_bf);
-
-  printf("Output matrices (Brute Force):\n");
-  print_matrices(output_matrices_bf);
-  printf("\n");
 
   MatrixArray output_matrices_strassen =
       multiply_matrix_array(input_matrices, strassen_algorithm);
 
-  printf("Output matrices (Strassen Algorithm):\n");
-  print_matrices(output_matrices_strassen);
-  printf("\n");
-
-  printf(
-      "Elapsed times for each pair of matrix multiplications (Brute Force):\n");
-  print_elapsed_times(output_matrices_bf);
-  printf("\n");
-
-  printf("Elapsed times for each pair of matrix multiplications (Strassen "
-         "Algorithm):\n");
-  print_elapsed_times(output_matrices_strassen);
-  printf("\n");
+  if (print_flag) {
+    print_results(file_path, input_matrices, output_matrices_bf,
+                  output_matrices_strassen);
+  }
 
   char *output_file_bf = generate_output_file_path(file_path, "BF");
   write_output_to_csv(output_file_bf, output_matrices_bf);
