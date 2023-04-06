@@ -5,7 +5,7 @@ This project implements Strassen's algorithm for matrix multiplication and compa
 ## File Structure
 
 ```
-strassen_matrix_multiplication/
+strassen-algorithm/
  └── bin/
     ├── matrix_app
     └── create_csv
@@ -68,7 +68,7 @@ This folder contains the following source code files:
 The `create_csv` program allows you to generate random matrix CSV files for testing purposes.<br>To build and run the `create_csv` program, follow these steps:
 
 1. Make sure you have a C compiler installed on your system (e.g., `gcc`).
-2. Navigate to the project root directory (`strassen_matrix_multiplication`).
+2. Navigate to the project root directory (`strassen-algorithm`).
 3. Run `make` to compile the project. The binary executable will be placed in the `bin` folder.
 4. Run the `create_csv` program using the following command:
 
@@ -85,12 +85,12 @@ The generated CSV file will be saved in the data folder with a<br>default naming
 ## Building and Running the Project
 
 1. Make sure you have a C compiler installed on your system (e.g., `gcc`).
-2. Navigate to the project root directory (`strassen_matrix_multiplication`).
+2. Navigate to the project root directory (`strassen-algorithm`).
 3. Run `make` to compile the project. The binary executable will be placed in the `bin` folder.
 4. Run the program using the following command:
 
 ```bash
-./bin/matrix_app [input_file] [output_file] [crossover_point] [n_dimensions]
+./bin/matrix_app [input_file] [crossover_point] [n_dimensions]
 ```
 
 To run the `matrix_app` program, you will need to specify the following arguments:

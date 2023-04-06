@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *generate_output_file_path(const char *input_file_path) {
+char *generate_output_file_path(const char *input_file_path,
+                                const char *method) {
   const char *output_dir = "./output/";
   const char *suffix = "-OUTPUT.csv";
   const char *filename_start = strrchr(input_file_path, '/');
@@ -19,10 +20,14 @@ char *generate_output_file_path(const char *input_file_path) {
   strncpy(filename_no_ext, filename_start, filename_length);
   filename_no_ext[filename_length] = '\0';
 
-  char *output_file_path = (char *)malloc(
-      strlen(output_dir) + strlen(filename_no_ext) + strlen(suffix) + 1);
+  char *output_file_path =
+      (char *)malloc(strlen(output_dir) + strlen(filename_no_ext) +
+                     strlen(method) + strlen(suffix) + 1);
+
   strcpy(output_file_path, output_dir);
   strcat(output_file_path, filename_no_ext);
+  strcat(output_file_path, "-");
+  strcat(output_file_path, method);
   strcat(output_file_path, suffix);
 
   free(filename_no_ext);
@@ -75,20 +80,38 @@ void write_output_to_csv(const char *output_file, MatrixArray output_matrices) {
   fclose(file);
 }
 
-MatrixArray read_csv(const char *filename, int n) {
+int count_columns(const char *line) {
+  int cols = 0;
+  int in_value = 0;
+
+  for (int i = 0; line[i] != '\0'; i++) {
+    if (line[i] == ',') {
+      cols++;
+      in_value = 0;
+    } else if (in_value == 0) {
+      in_value = 1;
+    }
+  }
+
+  if (in_value) {
+    cols++;
+  }
+
+  return cols;
+}
+
+MatrixArray read_csv(const char *filename) {
   FILE *file = fopen(filename, "r");
   if (!file) {
     fprintf(stderr, "Error: Unable to open the file %s\n", filename);
     exit(1);
   }
 
-  int rows = 1 << n;
-  int cols = rows;
-
   MatrixArray matrix_array = initialize_matrix_array();
 
   int current_matrix = -1;
   int row = 0;
+  int cols = -1;
 
   char *line = NULL;
   size_t len = 0;
@@ -106,18 +129,29 @@ MatrixArray read_csv(const char *filename, int n) {
 
     create_new_matrix = 1;
 
+    if (cols == -1) {
+      // Count the commas in the first non-blank line to determine the number of
+      // columns
+      cols = 1;
+      for (int i = 0; i < read; i++) {
+        if (line[i] == ',') {
+          cols++;
+        }
+      }
+    }
+
     if (row == 0) {
       create_new_matrix = 0;
       current_matrix++;
       matrix_array.num_matrices++;
       matrix_array.matrices =
-          add_matrix(matrix_array.matrices, current_matrix, rows, cols);
+          add_matrix(matrix_array.matrices, current_matrix, cols, cols);
     }
 
     add_line_to_matrix(&matrix_array.matrices[current_matrix], line, cols, row);
 
     row++;
-    if (row == rows) {
+    if (row == cols) {
       row = 0;
     }
   }
