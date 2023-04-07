@@ -200,58 +200,40 @@ void print_matrices(MatrixArray matrix_array) {
   }
 }
 
-void print_elapsed_times(MatrixArray matrix_array) {
-  printf("Elapsed times (seconds):\n");
+void print_elapsed_times(MatrixArray matrix_array, const char *method) {
+  printf("Elapsed times for each pair of matrix multiplications (%s):\n",
+         method);
+
   for (int i = 0; i < matrix_array.num_matrices; i++) {
     printf("Matrix pair %d: %.6f\n", i + 1, matrix_array.elapsed_times[i]);
   }
+
+  printf("\n");
 }
 
 void print_results_brute_force(const char *file_path,
-                               MatrixArray input_matrices,
                                MatrixArray output_matrices_bf) {
-  printf("Matrices read from file %s:\n", file_path);
-  print_matrices(input_matrices);
-  printf("\n");
+  printf("\nMatrices read from file %s:\n", file_path);
 
   printf("Output matrices (Brute Force):\n");
   print_matrices(output_matrices_bf);
   printf("\n");
-
-  printf(
-      "Elapsed times for each pair of matrix multiplications (Brute Force):\n");
-  print_elapsed_times(output_matrices_bf);
-  printf("\n");
 }
 
-void print_results_strassen(const char *file_path, MatrixArray input_matrices,
+void print_results_strassen(const char *file_path,
                             MatrixArray output_matrices_strassen) {
-  printf("Matrices read from file %s:\n", file_path);
-  print_matrices(input_matrices);
-  printf("\n");
+  printf("\nMatrices read from file %s:\n", file_path);
 
   printf("Output matrices (Strassen Algorithm):\n");
   print_matrices(output_matrices_strassen);
   printf("\n");
-
-  printf("Elapsed times for each pair of matrix multiplications (Strassen "
-         "Algorithm):\n");
-  print_elapsed_times(output_matrices_strassen);
-  printf("\n");
 }
 
-void print_results_combined(const char *file_path, MatrixArray input_matrices,
+void print_results_combined(const char *file_path,
                             MatrixArray output_matrices_combined) {
-  printf("Matrices read from file %s:\n", file_path);
-  print_matrices(input_matrices);
-  printf("\n");
+  printf("\nMatrices read from file %s:\n", file_path);
 
   printf("Output matrices (Combined Algorithm):\n");
   print_matrices(output_matrices_combined);
-  printf("\n");
-
-  printf("Elapsed times for each pair of matrix multiplications (Combined "
-         "Algorithm):\n");
-  print_elapsed_times(output_matrices_combined);
   printf("\n");
 }

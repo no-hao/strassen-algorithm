@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-Matrix strassen_algorithm(Matrix a, Matrix b);
+Matrix strassen_algorithm(Matrix a, Matrix b, void *params);
 
 #endif

@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-Matrix brute_force_algorithm(Matrix a, Matrix b);
+Matrix brute_force_algorithm(Matrix a, Matrix b, void *params);
 
 #endif // !BRUTE_FORCE_H

@@ -3,6 +3,6 @@
 
 #include "../include/matrix.h"
 
-Matrix combined_algorithm(Matrix a, Matrix b, int crossover_point);
+Matrix combined_algorithm(Matrix a, Matrix b, void *crossover_point_ptr);
 
 #endif

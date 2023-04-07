@@ -73,14 +73,14 @@ Matrix subtract_matrices(Matrix a, Matrix b) {
 
 // Function to multiply a pair of matrices using the specified function
 Matrix multiply_matrix_pair(Matrix a, Matrix b,
-                            Matrix (*multiply_func)(Matrix, Matrix)) {
-  return multiply_func(a, b);
+                            MultiplyFunction multiply_function) {
+  return multiply_function.multiply_func(a, b, multiply_function.extra_data);
 }
 
 // Function to multiply matrices in pairs inside a MatrixArray using the
 // specified function
 MatrixArray multiply_matrix_array(MatrixArray input,
-                                  Matrix (*multiply_func)(Matrix, Matrix)) {
+                                  MultiplyFunction multiply_function) {
   if (input.num_matrices % 2 != 0) {
     printf(
         "Error: odd number of matrices in input. Cannot multiply in pairs.\n");
@@ -95,7 +95,7 @@ MatrixArray multiply_matrix_array(MatrixArray input,
   for (int i = 0; i < input.num_matrices; i += 2) {
     clock_t start = clock();
     output.matrices[i / 2] = multiply_matrix_pair(
-        input.matrices[i], input.matrices[i + 1], multiply_func);
+        input.matrices[i], input.matrices[i + 1], multiply_function);
     clock_t end = clock();
     output.elapsed_times[i / 2] = (double)(end - start) / CLOCKS_PER_SEC;
   }

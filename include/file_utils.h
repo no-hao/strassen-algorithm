@@ -26,18 +26,17 @@ int count_columns(const char *line);
 
 Matrix create_matrix(int rows, int cols);
 
-void print_elapsed_times(MatrixArray matrix_array);
+void print_elapsed_times(MatrixArray matrix_array, const char *method);
 
 void print_matrices(MatrixArray matrix_array);
 
 void print_results_brute_force(const char *file_path,
-                               MatrixArray input_matrices,
                                MatrixArray output_matrices_bf);
 
-void print_results_strassen(const char *file_path, MatrixArray input_matrices,
+void print_results_strassen(const char *file_path,
                             MatrixArray output_matrices_strassen);
 
-void print_results_combined(const char *file_path, MatrixArray input_matrices,
+void print_results_combined(const char *file_path,
                             MatrixArray output_matrices_combined);
 
 #endif

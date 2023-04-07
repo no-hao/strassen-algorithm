@@ -5,6 +5,7 @@
 
 typedef struct {
   bool print_flag;
+  bool print_time_flag;
   bool brute_force_flag;
   bool strassen_flag;
   bool combined_flag;
@@ -15,6 +16,11 @@ typedef struct {
   int cols;
   float **data;
 } Matrix;
+
+typedef struct {
+  Matrix (*multiply_func)(Matrix, Matrix, void *);
+  void *extra_data;
+} MultiplyFunction;
 
 typedef struct {
   int num_matrices;
@@ -40,11 +46,11 @@ MatrixArray initialize_matrix_array();
 
 Matrix subtract_matrices(Matrix a, Matrix b);
 
-MatrixArray multiply_matrix_array(MatrixArray input,
-                                  Matrix (*multiply_func)(Matrix, Matrix));
-
 Matrix multiply_matrix_pair(Matrix a, Matrix b,
-                            Matrix (*multiply_func)(Matrix, Matrix));
+                            MultiplyFunction multiply_function);
+
+MatrixArray multiply_matrix_array(MatrixArray input,
+                                  MultiplyFunction multiply_function);
 
 void subdivide_matrix(Matrix matrix, Matrix *a, Matrix *b, Matrix *c,
                       Matrix *d);
