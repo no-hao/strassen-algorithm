@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 typedef struct {
-  bool print_flag;
+  bool print_results_flag;
   bool print_time_flag;
   bool brute_force_flag;
   bool strassen_flag;
@@ -27,6 +27,8 @@ typedef struct {
   Matrix *matrices;
   double *elapsed_times;
 } MatrixArray;
+
+typedef enum { PR, PT, B, S, C, INVALID } OptionType;
 
 Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols);
 

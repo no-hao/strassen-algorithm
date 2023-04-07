@@ -5,6 +5,8 @@
 #include "matrix.h"
 #include <stdio.h>
 
+OptionType get_option_type(const char *option_str);
+
 char *generate_output_file_path(const char *input_file_path,
                                 const char *method);
 
@@ -26,17 +28,14 @@ int count_columns(const char *line);
 
 Matrix create_matrix(int rows, int cols);
 
-void print_elapsed_times(MatrixArray matrix_array, const char *method);
-
 void print_matrices(MatrixArray matrix_array);
 
-void print_results_brute_force(const char *file_path,
-                               MatrixArray output_matrices_bf);
+void print_elapsed_times(MatrixArray matrix_array, const char *method);
 
-void print_results_strassen(const char *file_path,
-                            MatrixArray output_matrices_strassen);
+void print_results(MatrixArray output_matrices, const char *algorithm_name);
 
-void print_results_combined(const char *file_path,
-                            MatrixArray output_matrices_combined);
+void process_algorithm(MultiplyFunction algorithm_function,
+                       MatrixArray input_matrices, Options options,
+                       const char *file_path, const char *algorithm_name);
 
 #endif

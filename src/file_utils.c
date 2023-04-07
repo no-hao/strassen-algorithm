@@ -3,6 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+OptionType get_option_type(const char *option_str) {
+  if (strcmp(option_str, "-pr") == 0) {
+    return PR;
+  } else if (strcmp(option_str, "-pt") == 0) {
+    return PT;
+  } else if (strcmp(option_str, "-b") == 0) {
+    return B;
+  } else if (strcmp(option_str, "-s") == 0) {
+    return S;
+  } else if (strcmp(option_str, "-c") == 0) {
+    return C;
+  } else {
+    return INVALID;
+  }
+}
+
 char *generate_output_file_path(const char *input_file_path,
                                 const char *method) {
   const char *output_dir = "./output/";
@@ -200,6 +216,28 @@ void print_matrices(MatrixArray matrix_array) {
   }
 }
 
+void process_algorithm(MultiplyFunction algorithm_function,
+                       MatrixArray input_matrices, Options options,
+                       const char *file_path, const char *algorithm_name) {
+  MatrixArray output_matrices =
+      multiply_matrix_array(input_matrices, algorithm_function);
+
+  if (options.print_results_flag) {
+    print_results(output_matrices, algorithm_name);
+  }
+
+  if (options.print_time_flag) {
+    print_elapsed_times(output_matrices, algorithm_name);
+  }
+
+  char *output_file = generate_output_file_path(file_path, algorithm_name);
+  write_output_to_csv(output_file, output_matrices);
+  printf("Output matrices (%s) written to file: %s\n", algorithm_name,
+         output_file);
+  free(output_file);
+  free_matrix_array(&output_matrices);
+}
+
 void print_elapsed_times(MatrixArray matrix_array, const char *method) {
   printf("Elapsed times for each pair of matrix multiplications (%s):\n",
          method);
@@ -211,29 +249,8 @@ void print_elapsed_times(MatrixArray matrix_array, const char *method) {
   printf("\n");
 }
 
-void print_results_brute_force(const char *file_path,
-                               MatrixArray output_matrices_bf) {
-  printf("\nMatrices read from file %s:\n", file_path);
-
-  printf("Output matrices (Brute Force):\n");
-  print_matrices(output_matrices_bf);
-  printf("\n");
-}
-
-void print_results_strassen(const char *file_path,
-                            MatrixArray output_matrices_strassen) {
-  printf("\nMatrices read from file %s:\n", file_path);
-
-  printf("Output matrices (Strassen Algorithm):\n");
-  print_matrices(output_matrices_strassen);
-  printf("\n");
-}
-
-void print_results_combined(const char *file_path,
-                            MatrixArray output_matrices_combined) {
-  printf("\nMatrices read from file %s:\n", file_path);
-
-  printf("Output matrices (Combined Algorithm):\n");
-  print_matrices(output_matrices_combined);
+void print_results(MatrixArray output_matrices, const char *algorithm_name) {
+  printf("\nOutput matrices (%s):\n", algorithm_name);
+  print_matrices(output_matrices);
   printf("\n");
 }
