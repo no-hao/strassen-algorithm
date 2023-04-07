@@ -207,9 +207,9 @@ void print_elapsed_times(MatrixArray matrix_array) {
   }
 }
 
-void print_results(const char *file_path, MatrixArray input_matrices,
-                   MatrixArray output_matrices_bf,
-                   MatrixArray output_matrices_strassen) {
+void print_results_brute_force(const char *file_path,
+                               MatrixArray input_matrices,
+                               MatrixArray output_matrices_bf) {
   printf("Matrices read from file %s:\n", file_path);
   print_matrices(input_matrices);
   printf("\n");
@@ -218,17 +218,40 @@ void print_results(const char *file_path, MatrixArray input_matrices,
   print_matrices(output_matrices_bf);
   printf("\n");
 
-  printf("Output matrices (Strassen Algorithm):\n");
-  print_matrices(output_matrices_strassen);
-  printf("\n");
-
   printf(
       "Elapsed times for each pair of matrix multiplications (Brute Force):\n");
   print_elapsed_times(output_matrices_bf);
+  printf("\n");
+}
+
+void print_results_strassen(const char *file_path, MatrixArray input_matrices,
+                            MatrixArray output_matrices_strassen) {
+  printf("Matrices read from file %s:\n", file_path);
+  print_matrices(input_matrices);
+  printf("\n");
+
+  printf("Output matrices (Strassen Algorithm):\n");
+  print_matrices(output_matrices_strassen);
   printf("\n");
 
   printf("Elapsed times for each pair of matrix multiplications (Strassen "
          "Algorithm):\n");
   print_elapsed_times(output_matrices_strassen);
+  printf("\n");
+}
+
+void print_results_combined(const char *file_path, MatrixArray input_matrices,
+                            MatrixArray output_matrices_combined) {
+  printf("Matrices read from file %s:\n", file_path);
+  print_matrices(input_matrices);
+  printf("\n");
+
+  printf("Output matrices (Combined Algorithm):\n");
+  print_matrices(output_matrices_combined);
+  printf("\n");
+
+  printf("Elapsed times for each pair of matrix multiplications (Combined "
+         "Algorithm):\n");
+  print_elapsed_times(output_matrices_combined);
   printf("\n");
 }

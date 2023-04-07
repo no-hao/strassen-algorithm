@@ -1,6 +1,15 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <stdbool.h>
+
+typedef struct {
+  bool print_flag;
+  bool brute_force_flag;
+  bool strassen_flag;
+  bool combined_flag;
+} Options;
+
 typedef struct {
   int rows;
   int cols;
@@ -18,6 +27,8 @@ Matrix *add_matrix(Matrix *matrices, int index, int rows, int cols);
 Matrix add_matrices(Matrix a, Matrix b);
 
 Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d);
+
+MatrixArray create_empty_matrix_array();
 
 void free_matrix(Matrix *matrix);
 

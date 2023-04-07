@@ -167,6 +167,13 @@ Matrix combine_matrices(Matrix a, Matrix b, Matrix c, Matrix d) {
   return result;
 }
 
+MatrixArray create_empty_matrix_array() {
+  MatrixArray empty_array;
+  empty_array.num_matrices = 0;
+  empty_array.matrices = NULL;
+  return empty_array;
+}
+
 void free_matrix(Matrix *matrix) {
   if (matrix->data) {
     for (int i = 0; i < matrix->rows; i++) {

@@ -40,7 +40,7 @@ $(shell mkdir -p $(RESULT_DIR))
 all: $(TARGET_APP) $(TARGET_CREATE_CSV)
 
 # Link object files to create the target executable
-$(TARGET_APP): $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/crossover.o $(SRC_DIR)/file_utils.o
+$(TARGET_APP): $(SRC_DIR)/main.o $(SRC_DIR)/matrix.o $(SRC_DIR)/brute_force.o $(SRC_DIR)/strassen.o $(SRC_DIR)/combined.o $(SRC_DIR)/file_utils.o
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
 
 
